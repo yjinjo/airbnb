@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "rooms",
     "common",
     "experiences",
+    "categories",
 ]
 
 
