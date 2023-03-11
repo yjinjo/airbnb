@@ -4,7 +4,7 @@ from django.db import models
 
 class Room(models.Model):
     class RoomKindChoices(models.TextChoices):
-        ENTIRE_PALCE = (
+        ENTIRE_PLACE = (
             "entire_place",
             "Entire Place",
         )
@@ -43,6 +43,9 @@ class Room(models.Model):
         User,
         on_delete=models.CASCADE,
     )
+    amenities = models.ManyToManyField("rooms.Amenity")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 class Amenity(models.Model):
