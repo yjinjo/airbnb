@@ -44,6 +44,15 @@ INSTALLED_APPS = [
     # 3rd party apps
     # my apps
     "users",
+    "rooms",
+    "common",
+    "experiences",
+    "categories",
+    "reviews",
+    "wishlists",
+    "bookings",
+    "medias",
+    "direct_messages",
 ]
 
 
