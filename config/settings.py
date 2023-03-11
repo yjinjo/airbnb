@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "experiences",
     "categories",
     "reviews",
+    "wishlists",
 ]
 
 
