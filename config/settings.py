@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "reviews",
     "wishlists",
     "bookings",
+    "medias",
 ]
 
 
