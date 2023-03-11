@@ -1,21 +1,12 @@
-from django.contrib.auth.models import User
 from django.db import models
+from common.models import CommonModel
 
 
-class Room(models.Model):
+class Room(CommonModel):
     class RoomKindChoices(models.TextChoices):
-        ENTIRE_PLACE = (
-            "entire_place",
-            "Entire Place",
-        )
-        PRIVATE_ROOM = (
-            "private_room",
-            "Private Room",
-        )
-        SHARED_ROOM = (
-            "shared_room",
-            "Shared Room",
-        )
+        ENTIRE_PLACE = ("entire_place", "Entire Place")
+        PRIVATE_ROOM = ("private_room", "Private Room")
+        SHARED_ROOM = "shared_room", "Shared Room"
 
     country = models.CharField(
         max_length=50,
@@ -37,18 +28,18 @@ class Room(models.Model):
     )
     kind = models.CharField(
         max_length=20,
-        choices=RoomKindChoices,
+        choices=RoomKindChoices.choices,
     )
     owner = models.ForeignKey(
-        User,
+        "users.User",
         on_delete=models.CASCADE,
     )
-    amenities = models.ManyToManyField("rooms.Amenity")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    amenities = models.ManyToManyField(
+        "rooms.Amenity",
+    )
 
 
-class Amenity(models.Model):
+class Amenity(CommonModel):
     name = models.CharField(
         max_length=150,
     )
