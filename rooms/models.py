@@ -54,28 +54,7 @@ class Room(CommonModel):
         return self.amenities.count()
 
     def rating(self):
-        # count = self.reviews.count()
-        #
-        # if count == 0:
-        #     return "No Review"
-        # else:
-        #     total_rating = 0
-        #     for review in self.reviews.all():
-        #         total_rating += review.rating
-        #     return total_rating / count
-
-        """Query Optimization #1"""
-        # count = self.reviews.count()
-        #
-        # if count == 0:
-        #     return "No Review"
-        # else:
-        #     total_rating = 0
-        #     for review in self.reviews.all().values("rating"):
-        #         total_rating += review["rating"]
-        #     return round(total_rating / count, 2)
-
-        """Query Optimization #2"""
+        """Query Optimization"""
         avg_rating = self.reviews.aggregate(Avg("rating"))["rating__avg"]
 
         if avg_rating is None:
