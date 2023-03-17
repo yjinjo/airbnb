@@ -1,5 +1,5 @@
 from rest_framework.test import APITestCase
-from . import models
+from rooms import models
 
 
 class TestAmenities(APITestCase):
