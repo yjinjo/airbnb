@@ -1,5 +1,5 @@
 import strawberry
-from typing import List
+from typing import List, Optional
 from . import types
 from . import queries
 
@@ -8,4 +8,7 @@ from . import queries
 class Query:
     all_rooms: List[types.RoomType] = strawberry.field(
         resolver=queries.get_all_rooms,
+    )
+    room: Optional[types.RoomType] = strawberry.field(
+        resolver=queries.get_room,
     )
