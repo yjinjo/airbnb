@@ -42,6 +42,7 @@ class TestAmenities(APITestCase):
     def test_create_amenity(self):
         new_amenity_name = "New Amenity"
         new_amenity_description = "New Amenity desc."
+        invalid_name = "A" * 151
 
         response = self.client.post(
             self.URL,
@@ -65,3 +66,15 @@ class TestAmenities(APITestCase):
         data = response.json()
         self.assertEqual(response.status_code, 400)
         self.assertIn("name", data)
+
+        # invalid name post
+        response = self.client.post(
+            self.URL,
+            data={
+                "name": invalid_name,
+                "description": new_amenity_description,
+            },
+        )
+        self.assertIn("name", data)
+        self.assertNotIn("description", data)
+        self.assertEqual(response.status_code, 400)
