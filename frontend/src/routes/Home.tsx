@@ -1,7 +1,8 @@
-import { Box, Grid, Skeleton, SkeletonText } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { Grid } from "@chakra-ui/react";
 import Room from "../components/Room";
 import RoomSkeleton from "../components/RoomSkeleton";
+import { useQuery } from "@tanstack/react-query";
+import { getRooms } from "../api";
 
 interface IPhoto {
   pk: string;
@@ -21,18 +22,7 @@ interface IRoom {
 }
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [rooms, setRooms] = useState<IRoom[]>([]);
-  const fetchRooms = async () => {
-    const response = await fetch("http://localhost:8000/api/v1/rooms/");
-    const json = await response.json();
-    setRooms(json);
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    fetchRooms();
-  }, []);
+  const { isLoading, data } = useQuery<IRoom[]>(["rooms"], getRooms);
 
   return (
     <Grid
@@ -63,7 +53,7 @@ export default function Home() {
           <RoomSkeleton />
         </>
       ) : null}
-      {rooms.map((room, idx) => (
+      {data?.map((room, idx) => (
         <Room
           // imageUrl={room.photos[0].file}
           imageUrl={`https://source.unsplash.com/random/450x${450 + idx}`}
