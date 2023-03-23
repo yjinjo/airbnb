@@ -27,21 +27,17 @@ import { useRef } from "react";
 
 export default function Header() {
   const { userLoading, isLoggedIn, user } = useUser();
-
   const {
     isOpen: isLoginOpen,
     onClose: onLoginClose,
     onOpen: onLoginOpen,
   } = useDisclosure();
-
   const {
     isOpen: isSignUpOpen,
     onClose: onSignUpClose,
     onOpen: onSignUpOpen,
   } = useDisclosure();
-
   const { toggleColorMode } = useColorMode();
-
   const logoColor = useColorModeValue("red.500", "red.200");
   const Icon = useColorModeValue(FaMoon, FaSun);
   const toast = useToast();
@@ -67,11 +63,9 @@ export default function Header() {
       }
     },
   });
-
   const onLogOut = async () => {
     mutation.mutate();
   };
-
   return (
     <Stack
       py="5"
