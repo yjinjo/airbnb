@@ -1,3 +1,4 @@
+import { useForm } from "react-hook-form";
 import {
   Box,
   Button,
@@ -14,16 +15,11 @@ import {
   useToast,
   VStack,
 } from "@chakra-ui/react";
-import { FaLock, FaUserNinja } from "react-icons/fa";
+import React from "react";
+import { FaUserNinja, FaLock } from "react-icons/fa";
 import SocialLogin from "./SocialLogin";
-import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  IUsernameLoginError,
-  IUsernameLoginSuccess,
-  IUsernameLoginVariables,
-  usernameLogIn,
-} from "../api";
+import { usernameLogIn } from "../api";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -40,30 +36,24 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<IForm>();
   const toast = useToast();
   const queryClient = useQueryClient();
-  const mutation = useMutation<
-    IUsernameLoginSuccess,
-    IUsernameLoginError,
-    IUsernameLoginVariables
-  >(usernameLogIn, {
-    onMutate: () => {
-      console.log("mutation starting");
-    },
-    onSuccess: (data) => {
+  const mutation = useMutation(usernameLogIn, {
+    onSuccess: () => {
       toast({
         title: "welcome back!",
         status: "success",
       });
       onClose();
       queryClient.refetchQueries(["me"]);
+      reset();
     },
   });
   const onSubmit = ({ username, password }: IForm) => {
     mutation.mutate({ username, password });
   };
-
   return (
     <Modal onClose={onClose} isOpen={isOpen}>
       <ModalOverlay />
@@ -83,7 +73,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
               <Input
                 isInvalid={Boolean(errors.username?.message)}
                 {...register("username", {
-                  required: "Please write your username",
+                  required: "Please write a username",
                 })}
                 variant={"filled"}
                 placeholder="Username"
@@ -106,11 +96,13 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 variant={"filled"}
                 placeholder="Password"
               />
-              <Text fontSize={"sm"} color="red.500">
-                {errors.password?.message}
-              </Text>
             </InputGroup>
           </VStack>
+          {mutation.isError ? (
+            <Text color="red.500" textAlign={"center"} fontSize="sm">
+              Username or Password are wrong
+            </Text>
+          ) : null}
           <Button
             isLoading={mutation.isLoading}
             type="submit"
