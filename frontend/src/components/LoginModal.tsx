@@ -59,9 +59,6 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
       onClose();
       queryClient.refetchQueries(["me"]);
     },
-    onError: (error) => {
-      console.log("mutation has an error");
-    },
   });
   const onSubmit = ({ username, password }: IForm) => {
     mutation.mutate({ username, password });
