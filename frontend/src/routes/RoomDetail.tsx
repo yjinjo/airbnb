@@ -52,13 +52,12 @@ export default function RoomDetail() {
             key={index}
           >
             <Skeleton isLoaded={!isLoading} h="100%" w="100%">
-              {data?.photos && data.photos.length > 0 ? (
+              {data?.photos && data.photos.length > 4 ? (
                 <Image
                   objectFit={"cover"}
                   w="100%"
                   h="100%"
                   src={data?.photos[index].file}
-                  // src={`https://source.unsplash.com/random/450x${450 + index}`}
                 />
               ) : null}
             </Skeleton>
