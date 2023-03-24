@@ -58,16 +58,16 @@ INSTALLED_APPS = [
     "strawberry.django",
     "corsheaders",
     # my apps
-    "common.apps.CommonConfig",
-    "users.apps.UsersConfig",
-    "rooms.apps.RoomsConfig",
-    "experiences.apps.ExperiencesConfig",
-    "categories.apps.CategoriesConfig",
-    "reviews.apps.ReviewsConfig",
-    "wishlists.apps.WishlistsConfig",
-    "bookings.apps.BookingsConfig",
-    "medias.apps.MediasConfig",
-    "direct_messages.apps.DirectMessagesConfig",
+    "users",
+    "rooms",
+    "common",
+    "experiences",
+    "categories",
+    "reviews",
+    "wishlists",
+    "bookings",
+    "medias",
+    "direct_messages",
 ]
 
 
