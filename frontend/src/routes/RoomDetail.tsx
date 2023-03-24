@@ -3,27 +3,55 @@ import {
   Box,
   Button,
   Container,
+  FormControl,
   Grid,
   GridItem,
   Heading,
   HStack,
   Image,
+  Input,
+  InputGroup,
+  InputRightAddon,
   Skeleton,
   Text,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import { FaStar } from "react-icons/fa";
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "../calendar.css";
-import { checkBooking, getRoom, getRoomReviews } from "../api";
+import { checkBooking, createBooking, getRoom, getRoomReviews } from "../api";
 import { IReview, IRoomDetail } from "../types";
 import { useState } from "react";
 import { Helmet } from "react-helmet";
+import { useForm } from "react-hook-form";
+import { formatDate } from "../lib/utils";
+
+export interface IBooking {
+  pk: string;
+  check_in: string;
+  check_out: string;
+  guests: number;
+}
 
 export default function RoomDetail() {
+  const { register, handleSubmit } = useForm<IBooking>();
+  const toast = useToast();
+  const navigate = useNavigate();
+  const mutation = useMutation(createBooking, {
+    onSuccess: () => {
+      toast({
+        status: "success",
+        title: "Successfully booked",
+        isClosable: true,
+      });
+      navigate("/");
+    },
+  });
+
   const { roomPk } = useParams();
   const { isLoading, data } = useQuery<IRoomDetail>([`rooms`, roomPk], getRoom);
   const { data: reviewsData } = useQuery<IReview[]>(
@@ -39,6 +67,15 @@ export default function RoomDetail() {
       enabled: dates !== undefined,
     }
   );
+  const onSubmit = (data: IBooking) => {
+    if (dates && roomPk) {
+      data["pk"] = roomPk;
+      data["check_in"] = formatDate(dates[0]);
+      data["check_out"] = formatDate(dates[1]);
+      mutation.mutate(data);
+    }
+  };
+
   return (
     <Box
       pb={40}
@@ -146,7 +183,7 @@ export default function RoomDetail() {
             </Container>
           </Box>
         </Box>
-        <Box pt={10}>
+        <Box as="form" onSubmit={handleSubmit(onSubmit)} pt={10} border="none">
           <Calendar
             formatDay={(locale, date) =>
               date.toLocaleString("en", { day: "numeric" })
@@ -160,6 +197,19 @@ export default function RoomDetail() {
             maxDate={new Date(Date.now() + 60 * 60 * 24 * 7 * 4 * 6 * 1000)}
             selectRange
           />
+          <FormControl p={3} border={"1px solid gray"}>
+            {/* <FormLabel>Guests</FormLabel> */}
+            <InputGroup>
+              <Input
+                {...register("guests")}
+                defaultValue={1}
+                required
+                type="number"
+                min={1}
+              />
+              <InputRightAddon children={"명"} />
+            </InputGroup>
+          </FormControl>
           <Button
             disabled={!checkBookingData?.ok}
             isLoading={isCheckingBooking && dates !== undefined}
