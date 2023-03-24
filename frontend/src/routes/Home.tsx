@@ -4,7 +4,6 @@ import RoomSkeleton from "../components/RoomSkeleton";
 import { useQuery } from "@tanstack/react-query";
 import { getRooms } from "../api";
 import { IRoomList } from "../types";
-import { useEffect } from "react";
 
 export default function Home() {
   const { isLoading, data } = useQuery<IRoomList[]>(["rooms"], getRooms);
@@ -42,6 +41,7 @@ export default function Home() {
         <Room
           key={room.pk}
           pk={room.pk}
+          isOwner={room.is_owner}
           imageUrl={room.photos[0]?.file}
           // imageUrl={`https://source.unsplash.com/random/450x${450 + idx}`}
           name={room.name}
