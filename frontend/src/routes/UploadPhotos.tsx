@@ -12,24 +12,34 @@ import { useParams } from "react-router-dom";
 import useHostOnlyPage from "../components/HostOnlyPage";
 import ProtectedPage from "../components/ProtectedPage";
 import { useMutation } from "@tanstack/react-query";
-import { getUploadURL } from "../api";
+import { getUploadURL, uploadImage } from "../api";
 
 interface IForm {
+  id: string;
   file: FileList;
 }
 
 export default function UploadPhotos() {
-  const { register, handleSubmit } = useForm<IForm>();
-  const mutation = useMutation(getUploadURL, {
+  const { register, handleSubmit, watch } = useForm<IForm>();
+  const uploadImageMutation = useMutation(uploadImage, {
     onSuccess: (data: any) => {
       console.log(data);
+    },
+  });
+  const uploadURLMutation = useMutation(getUploadURL, {
+    onSuccess: (data: any) => {
+      uploadImageMutation.mutate({
+        uploadURL: data.uploadURL,
+        file: watch("file"),
+      });
     },
   });
   const { roomPk } = useParams();
   useHostOnlyPage();
   const onSubmit = (data: any) => {
-    mutation.mutate();
+    uploadURLMutation.mutate();
   };
+  console.log(watch());
   return (
     <ProtectedPage>
       <Box
