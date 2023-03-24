@@ -133,7 +133,7 @@ fabric.properties
 !.idea/runConfigurations
 
 *.pyc
-migrations/
+#migrations/
 .env
 uploads/
 
