@@ -49,7 +49,7 @@ class Users(APIView):
         serializer = serializers.PrivateUserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            user.set_password()
+            user.set_password(password)
             user.save()
             serializer = serializers.PrivateUserSerializer(user)
             return Response(serializer.data)
@@ -83,7 +83,7 @@ class ChangePassword(APIView):
             user.save()
             return Response(status=status.HTTP_200_OK)
         else:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return ParseError
 
 
 class LogIn(APIView):
@@ -103,7 +103,10 @@ class LogIn(APIView):
             login(request, user)
             return Response({"ok": "Welcome!"})
         else:
-            return Response({"error": "wrong password"})
+            return Response(
+                {"error": "wrong password"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class LogOut(APIView):

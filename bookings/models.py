@@ -7,7 +7,10 @@ class Booking(CommonModel):
         ROOM = ("room", "Room")
         EXPERIENCE = ("experience", "Experience")
 
-    kind = models.CharField(max_length=15, choices=BookingKindChoices.choices)
+    kind = models.CharField(
+        max_length=15,
+        choices=BookingKindChoices.choices,
+    )
     user = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE,

@@ -16,7 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { FaLock, FaUserAlt } from "react-icons/fa";
+import { FaLock, FaUserAlt, FaUserNinja } from "react-icons/fa";
 import {
   IUsernameLoginError,
   IUsernameLoginSuccess,
@@ -35,34 +35,29 @@ interface IForm {
   password: string;
 }
 
-export default function LoginModal({ onClose, isOpen }: LoginModalProps) {
+export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
+    reset,
   } = useForm<IForm>();
   const toast = useToast();
   const queryClient = useQueryClient();
-  const mutation = useMutation<
-    IUsernameLoginSuccess,
-    IUsernameLoginError,
-    IUsernameLogInVariables
-  >(usernameLogIn, {
+  const mutation = useMutation(usernameLogIn, {
     onSuccess: () => {
-      toast({ title: "Welcome back!", status: "success" });
+      toast({
+        title: "Welcome back!",
+        status: "success",
+      });
       onClose();
       queryClient.refetchQueries(["me"]);
-    },
-    onError: () => {
       reset();
     },
   });
-
   const onSubmit = ({ username, password }: IForm) => {
     mutation.mutate({ username, password });
   };
-
   return (
     <Modal onClose={onClose} isOpen={isOpen}>
       <ModalOverlay />
@@ -71,21 +66,21 @@ export default function LoginModal({ onClose, isOpen }: LoginModalProps) {
         <ModalCloseButton />
         <ModalBody as="form" onSubmit={handleSubmit(onSubmit)}>
           <VStack>
-            <InputGroup>
+            <InputGroup size={"md"}>
               <InputLeftElement
                 children={
                   <Box color="gray.500">
-                    <FaUserAlt />
+                    <FaUserNinja />
                   </Box>
                 }
               />
               <Input
                 isInvalid={Boolean(errors.username?.message)}
-                placeholder="username"
-                variant="filled"
                 {...register("username", {
                   required: "Please write a username",
                 })}
+                variant={"filled"}
+                placeholder="username"
               />
             </InputGroup>
             <InputGroup>
@@ -98,12 +93,12 @@ export default function LoginModal({ onClose, isOpen }: LoginModalProps) {
               />
               <Input
                 isInvalid={Boolean(errors.password?.message)}
-                placeholder="password"
-                variant="filled"
-                type="password"
                 {...register("password", {
                   required: "Please write a password",
                 })}
+                type="password"
+                variant={"filled"}
+                placeholder="password"
               />
             </InputGroup>
           </VStack>
@@ -115,9 +110,9 @@ export default function LoginModal({ onClose, isOpen }: LoginModalProps) {
           <Button
             isLoading={mutation.isLoading}
             type="submit"
-            w="full"
-            colorScheme="red"
             mt={4}
+            colorScheme={"red"}
+            w="100%"
           >
             Log in
           </Button>

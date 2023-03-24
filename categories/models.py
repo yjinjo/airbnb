@@ -15,7 +15,7 @@ class Category(CommonModel):
         choices=CategoryKindChoices.choices,
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.kind.title()}: {self.name}"
 
     class Meta:
