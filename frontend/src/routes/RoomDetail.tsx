@@ -17,18 +17,19 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import "react-calendar/dist/Calendar.css";
+import "../calendar.css";
 import { checkBooking, getRoom, getRoomReviews } from "../api";
 import { IReview, IRoomDetail } from "../types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Helmet } from "react-helmet";
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
   const { isLoading, data } = useQuery<IRoomDetail>([`rooms`, roomPk], getRoom);
-  const { data: reviewsData, isLoading: isReviewsLoading } = useQuery<
-    IReview[]
-  >([`rooms`, roomPk, `reviews`], getRoomReviews);
-
+  const { data: reviewsData } = useQuery<IReview[]>(
+    [`rooms`, roomPk, `reviews`],
+    getRoomReviews
+  );
   const [dates, setDates] = useState<Date[]>();
   const { data: checkBookingData, isLoading: isCheckingBooking } = useQuery(
     ["check", roomPk, dates],
@@ -38,8 +39,6 @@ export default function RoomDetail() {
       enabled: dates !== undefined,
     }
   );
-  console.log(checkBookingData, isCheckingBooking);
-
   return (
     <Box
       pb={40}
@@ -49,6 +48,9 @@ export default function RoomDetail() {
         lg: 40,
       }}
     >
+      <Helmet>
+        <title>{data ? data.name : "Loading..."}</title>
+      </Helmet>
       <Skeleton height={"43px"} width="25%" isLoaded={!isLoading}>
         <Heading>{data?.name}</Heading>
       </Skeleton>
@@ -81,7 +83,7 @@ export default function RoomDetail() {
           </GridItem>
         ))}
       </Grid>
-      <Grid gap={20} templateColumns={"2fr 1fr"} maxW="container.lg">
+      <Grid gap={60} templateColumns={"2fr 1fr"}>
         <Box>
           <HStack justifyContent={"space-between"} mt={10}>
             <VStack alignItems={"flex-start"}>
@@ -146,6 +148,10 @@ export default function RoomDetail() {
         </Box>
         <Box pt={10}>
           <Calendar
+            formatDay={(locale, date) =>
+              date.toLocaleString("en", { day: "numeric" })
+            }
+            goToRangeStartOnSelect
             onChange={setDates}
             prev2Label={null}
             next2Label={null}
@@ -156,15 +162,15 @@ export default function RoomDetail() {
           />
           <Button
             disabled={!checkBookingData?.ok}
-            isLoading={isCheckingBooking}
+            isLoading={isCheckingBooking && dates !== undefined}
             my={5}
             w="100%"
             colorScheme={"red"}
           >
-            Make Booking
+            Make booking
           </Button>
           {!isCheckingBooking && !checkBookingData?.ok ? (
-            <Text color="red.500">Can't book on those dates</Text>
+            <Text color="red.500">Can't book on those dates, sorry.</Text>
           ) : null}
         </Box>
       </Grid>

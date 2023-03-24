@@ -95,25 +95,22 @@ class Rooms(APIView):
                     raise ParseError("The category kind should be 'rooms'")
             except Category.DoesNotExist:
                 raise ParseError("Category not found")
-
             try:
                 with transaction.atomic():
                     room = serializer.save(
                         owner=request.user,
                         category=category,
                     )
-
                     amenities = request.data.get("amenities")
                     for amenity_pk in amenities:
                         amenity = Amenity.objects.get(pk=amenity_pk)
                         room.amenities.add(amenity)
-
                     serializer = serializers.RoomDetailSerializer(
                         room,
                         context={"request": request},
                     )
                     return Response(serializer.data)
-            except Exception:
+            except Exception as e:
                 raise ParseError("Amenity not found")
         else:
             return Response(
@@ -266,7 +263,6 @@ class RoomBooking(APIView):
     def get(self, request, pk):
         room = self.get_object(pk)
         now = timezone.localtime(timezone.now()).date()
-
         bookings = Booking.objects.filter(
             room=room,
             kind=Booking.BookingKindChoices.ROOM,
