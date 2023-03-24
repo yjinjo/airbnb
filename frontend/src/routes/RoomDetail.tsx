@@ -1,6 +1,7 @@
 import {
   Avatar,
   Box,
+  Button,
   Container,
   Grid,
   GridItem,
@@ -17,7 +18,7 @@ import { useParams } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import "react-calendar/dist/Calendar.css";
-import { getRoom, getRoomReviews } from "../api";
+import { checkBooking, getRoom, getRoomReviews } from "../api";
 import { IReview, IRoomDetail } from "../types";
 import { useEffect, useState } from "react";
 
@@ -27,15 +28,18 @@ export default function RoomDetail() {
   const { data: reviewsData, isLoading: isReviewsLoading } = useQuery<
     IReview[]
   >([`rooms`, roomPk, `reviews`], getRoomReviews);
+
   const [dates, setDates] = useState<Date[]>();
-  useEffect(() => {
-    if (dates) {
-      const [firstDate, secondDate] = dates;
-      const [checkIn] = firstDate.toJSON().split("T");
-      const [checkOut] = secondDate.toJSON().split("T");
-      console.log(checkIn, checkOut);
+  const { data: checkBookingData, isLoading: isCheckingBooking } = useQuery(
+    ["check", roomPk, dates],
+    checkBooking,
+    {
+      cacheTime: 0,
+      enabled: dates !== undefined,
     }
-  }, [dates]);
+  );
+  console.log(checkBookingData, isCheckingBooking);
+
   return (
     <Box
       pb={40}
@@ -150,6 +154,18 @@ export default function RoomDetail() {
             maxDate={new Date(Date.now() + 60 * 60 * 24 * 7 * 4 * 6 * 1000)}
             selectRange
           />
+          <Button
+            disabled={!checkBookingData?.ok}
+            isLoading={isCheckingBooking}
+            my={5}
+            w="100%"
+            colorScheme={"red"}
+          >
+            Make Booking
+          </Button>
+          {!isCheckingBooking && !checkBookingData?.ok ? (
+            <Text color="red.500">Can't book on those dates</Text>
+          ) : null}
         </Box>
       </Grid>
     </Box>

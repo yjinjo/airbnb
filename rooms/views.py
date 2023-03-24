@@ -278,7 +278,8 @@ class RoomBooking(APIView):
     def post(self, request, pk):
         room = self.get_object(pk)
         serializer = CreateRoomBookingSerializer(
-            data=request.data, context={"room": room}
+            data=request.data,
+            context={"room": room},
         )
         if serializer.is_valid():
             booking = serializer.save(
@@ -306,9 +307,8 @@ class RoomBookingCheck(APIView):
         exists = Booking.objects.filter(
             room=room,
             check_in__lte=check_out,
-            check_out_gte=check_in,
+            check_out__gte=check_in,
         ).exists()
-
         if exists:
             return Response({"ok": False})
         return Response({"ok": True})
