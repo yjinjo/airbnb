@@ -91,6 +91,7 @@ export const usernameLogIn = ({
 
 interface ISignUpVariables {
   name: string;
+  phone_nb: string;
   email: string;
   username: string;
   password: string;
@@ -104,6 +105,7 @@ export const SignUp = ({
   password,
   email,
   name,
+  phone_nb,
   currency,
   gender,
   language,
@@ -111,7 +113,7 @@ export const SignUp = ({
   instance
     .post(
       `users/`,
-      { username, password, email, name, currency, gender, language },
+      { username, password, email, name, phone_nb, currency, gender, language },
       {
         headers: { "X-CSRFToken": Cookie.get("csrftoken") || "" },
       }
@@ -251,6 +253,9 @@ export const createBooking = (variables: IBooking) =>
 
 export const getBookings = () =>
   instance.get("bookings/me").then((response) => response.data);
+
+export const getManageBookings = () =>
+  instance.get("bookings/manage").then((response) => response.data);
 
 export const cancelBooking = (bookingPk: number) =>
   instance

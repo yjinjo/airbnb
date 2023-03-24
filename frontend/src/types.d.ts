@@ -1,3 +1,8 @@
+export interface IRoomCategory {
+  name: string;
+  kind: string;
+}
+
 export interface IRoomPhotoPhoto {
   pk: string;
   file: string;
@@ -13,6 +18,7 @@ export interface IRoomList {
   rating: number;
   is_owner: boolean;
   photos: IRoomPhotoPhoto[];
+  category: IRoomCategory;
 }
 
 export interface IRoomOwner {
@@ -27,14 +33,7 @@ export interface IAmenity {
   description: string;
 }
 
-export interface ICategory {
-  pk: number;
-  name: string;
-  kind: string;
-}
-
 export interface IRoomDetail extends IRoomList {
-  id: number;
   created_at: string;
   updated_at: string;
   rooms: number;
@@ -48,6 +47,14 @@ export interface IRoomDetail extends IRoomList {
   category: ICategory;
   owner: IRoomOwner;
   amenities: IAmenity[];
+  rating: number;
+  id: number;
+}
+
+export interface ICategory {
+  pk: number;
+  name: string;
+  kind: string;
 }
 
 export interface IReview {

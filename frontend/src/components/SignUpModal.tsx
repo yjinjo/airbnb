@@ -16,7 +16,13 @@ import {
 } from "@chakra-ui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { FaEnvelope, FaLock, FaUserAlt, FaUserSecret } from "react-icons/fa";
+import {
+  FaEnvelope,
+  FaLock,
+  FaPhone,
+  FaUserAlt,
+  FaUserSecret,
+} from "react-icons/fa";
 import { SignUp } from "../api";
 import SocialLogin from "./SocialLogin";
 
@@ -27,6 +33,7 @@ interface SignUpModalProps {
 
 interface IForm {
   name: string;
+  phone_nb: string;
   email: string;
   username: string;
   password: string;
@@ -54,6 +61,7 @@ export default function SignUpModal({ onClose, isOpen }: SignUpModalProps) {
     username,
     password,
     name,
+    phone_nb,
     email,
     currency,
     gender,
@@ -63,6 +71,7 @@ export default function SignUpModal({ onClose, isOpen }: SignUpModalProps) {
       username,
       email,
       name,
+      phone_nb,
       password,
       currency,
       gender,
@@ -90,6 +99,20 @@ export default function SignUpModal({ onClose, isOpen }: SignUpModalProps) {
                 {...register("name", { required: true })}
                 placeholder="name"
                 variant="filled"
+              />
+            </InputGroup>
+            <InputGroup>
+              <InputLeftElement
+                children={
+                  <Box color={"gray.500"}>
+                    <FaPhone />
+                  </Box>
+                }
+              ></InputLeftElement>
+              <Input
+                {...register("phone_nb", { required: true })}
+                variant={"filled"}
+                placeholder="Phone Number"
               />
             </InputGroup>
             <InputGroup>

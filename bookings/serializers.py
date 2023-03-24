@@ -1,11 +1,12 @@
 from django.utils import timezone
 from rest_framework import serializers
-
-from rooms.serializers import TinyRoomSerializer
 from .models import Booking
+from users.serializers import ManageBookingTinyUserSerializer
+from rooms.serializers import TinyRoomSerializer
 
 
 class CreateRoomBookingSerializer(serializers.ModelSerializer):
+
     check_in = serializers.DateField()
     check_out = serializers.DateField()
 
@@ -18,15 +19,15 @@ class CreateRoomBookingSerializer(serializers.ModelSerializer):
         )
 
     def validate_check_in(self, value):
-        now = timezone.localtime(timezone.now()).date()
+        now = timezone.localdate(timezone.now())
         if now > value:
             raise serializers.ValidationError("Can't book in the past!")
         return value
 
     def validate_check_out(self, value):
-        now = timezone.localtime(timezone.now()).date()
-        if now > value:
-            raise serializers.ValidationError("Can't book in the past!")
+        now = timezone.localdate(timezone.now())
+        if now >= value:
+            raise serializers.ValidationError("Can't book in the past")
         return value
 
     def validate(self, data):
@@ -41,12 +42,13 @@ class CreateRoomBookingSerializer(serializers.ModelSerializer):
             check_out__gte=data["check_in"],
         ).exists():
             raise serializers.ValidationError(
-                "Those (or some) dates are already taken."
+                "Those (or some) of those dates are already taken."
             )
         return data
 
 
 class CreateExperienceBookingSerializer(serializers.ModelSerializer):
+
     experience_time = serializers.DateTimeField()
 
     class Meta:
@@ -89,4 +91,23 @@ class CheckMyBookingSerializer(serializers.ModelSerializer):
             "check_out",
             "guests",
             "not_canceled",
+        )
+
+
+class ManageBookingsSerializer(serializers.ModelSerializer):
+
+    room = TinyRoomSerializer()
+
+    user = ManageBookingTinyUserSerializer()
+
+    class Meta:
+        model = Booking
+        fields = (
+            "id",
+            "room",
+            "check_in",
+            "check_out",
+            "guests",
+            "not_canceled",
+            "user",
         )

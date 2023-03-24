@@ -44,5 +44,9 @@ class Booking(CommonModel):
     )
     guests = models.PositiveIntegerField()
 
+    not_canceled = models.BooleanField(
+        default=True,
+    )
+
     def __str__(self):
         return f"{self.kind.title()} booking for: {self.user}"

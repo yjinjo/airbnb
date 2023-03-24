@@ -24,7 +24,7 @@ import useUser from "../lib/useUser";
 import { logOut } from "../api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Header() {
   const { userLoading, isLoggedIn, user } = useUser();
@@ -43,6 +43,7 @@ export default function Header() {
   const Icon = useColorModeValue(FaMoon, FaSun);
   const toast = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const toastId = useRef<ToastId>();
   const mutation = useMutation(logOut, {
     onMutate: () => {
@@ -62,6 +63,9 @@ export default function Header() {
           description: "See you later!",
         });
       }
+      queryClient.refetchQueries(["me"]);
+      queryClient.refetchQueries(["rooms"]);
+      navigate("/");
     },
   });
   const onLogOut = async () => {
@@ -108,14 +112,22 @@ export default function Header() {
           ) : (
             <Menu>
               <MenuButton>
-                <Avatar name={user?.name} src={user?.avatar} size={"md"} />
+                <Avatar name={user?.name} size={"md"} src={user?.avatar} />
               </MenuButton>
               <MenuList>
                 {user?.is_host ? (
-                  <Link to="/rooms/upload">
-                    <MenuItem>Upload room</MenuItem>
-                  </Link>
+                  <>
+                    <Link to="/manage-bookings">
+                      <MenuItem>Manage bookings</MenuItem>
+                    </Link>
+                    <Link to="/rooms/upload">
+                      <MenuItem>Upload room</MenuItem>
+                    </Link>
+                  </>
                 ) : null}
+                <Link to="/mybookings">
+                  <MenuItem>My bookings</MenuItem>
+                </Link>
                 <MenuItem onClick={onLogOut}>Log out</MenuItem>
               </MenuList>
             </Menu>

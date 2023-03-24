@@ -216,6 +216,7 @@ export default function RoomDetail() {
             my={5}
             w="100%"
             colorScheme={"red"}
+            type="submit"
           >
             Make booking
           </Button>

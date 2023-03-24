@@ -7,6 +7,9 @@ import GithubConfirm from "./routes/GithubConfirm";
 import KakaoConfirm from "./routes/KakaoConfirm";
 import UploadRoom from "./routes/UploadRoom";
 import UploadPhotos from "./routes/UploadPhotos";
+import ManageBookings from "./routes/ManageBookings";
+import MyBookings from "./routes/MyBookings";
+import ModifyRoom from "./routes/ModifyRoom";
 
 const router = createBrowserRouter([
   {
@@ -19,6 +22,14 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
+        path: "mybookings",
+        element: <MyBookings />,
+      },
+      {
+        path: "manage-bookings",
+        element: <ManageBookings />,
+      },
+      {
         path: "rooms/upload",
         element: <UploadRoom />,
       },
@@ -29,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: "rooms/:roomPk/photos",
         element: <UploadPhotos />,
+      },
+      {
+        path: "rooms/:roomPk/modify",
+        element: <ModifyRoom />,
       },
       {
         path: "social",
