@@ -248,3 +248,15 @@ export const createBooking = (variables: IBooking) =>
       },
     })
     .then((response) => response.status);
+
+export const getBookings = () =>
+  instance.get("bookings/me").then((response) => response.data);
+
+export const cancelBooking = (bookingPk: number) =>
+  instance
+    .post(`bookings/me/${bookingPk}/cancel`, null, {
+      headers: {
+        "X-CSRFToken": Cookie.get("csrftoken") || "",
+      },
+    })
+    .then((response) => response.status);

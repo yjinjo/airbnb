@@ -68,3 +68,16 @@ export interface IUser {
   language: string;
   currency: string;
 }
+
+export interface IBooking {
+  id: number;
+  room: {
+    name: string;
+    price: number;
+  };
+  kind: string;
+  check_in: string;
+  check_out: string;
+  guests: number;
+  not_canceled: boolean;
+}

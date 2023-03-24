@@ -1,5 +1,7 @@
 from django.utils import timezone
 from rest_framework import serializers
+
+from rooms.serializers import TinyRoomSerializer
 from .models import Booking
 
 
@@ -44,6 +46,23 @@ class CreateRoomBookingSerializer(serializers.ModelSerializer):
         return data
 
 
+class CreateExperienceBookingSerializer(serializers.ModelSerializer):
+    experience_time = serializers.DateTimeField()
+
+    class Meta:
+        model = Booking
+        fields = (
+            "experience_time",
+            "guests",
+        )
+
+    def validate_experience_time(self, value):
+        now = timezone.localdate(timezone.now())
+        if now > value.date():
+            raise serializers.ValidationError("Can't book in the past!")
+        return value
+
+
 class PublicBookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
@@ -53,4 +72,21 @@ class PublicBookingSerializer(serializers.ModelSerializer):
             "check_out",
             "experience_time",
             "guests",
+        )
+
+
+class CheckMyBookingSerializer(serializers.ModelSerializer):
+
+    room = TinyRoomSerializer()
+
+    class Meta:
+        model = Booking
+        fields = (
+            "id",
+            "room",
+            "kind",
+            "check_in",
+            "check_out",
+            "guests",
+            "not_canceled",
         )
