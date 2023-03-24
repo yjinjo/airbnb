@@ -43,7 +43,10 @@ class WishlistDetail(APIView):
 
     def get(self, request, pk):
         wishlist = self.get_object(pk, request.user)
-        serializer = WishlistSerializer(wishlist)
+        serializer = WishlistSerializer(
+            wishlist,
+            context={"request": request},
+        )
         return Response(serializer.data)
 
     def delete(self, request, pk):
@@ -60,7 +63,10 @@ class WishlistDetail(APIView):
         )
         if serializer.is_valid():
             wishlist = serializer.save()
-            serializer = WishlistSerializer(wishlist)
+            serializer = WishlistSerializer(
+                wishlist,
+                context={"request": request},
+            )
             return Response(serializer.data)
         else:
             return Response(serializer.errors)

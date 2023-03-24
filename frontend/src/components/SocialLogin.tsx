@@ -7,9 +7,16 @@ export default function SocialLogin() {
     redirect_uri: "http://localhost:3000/social/kakao",
     response_type: "code",
   };
-  const params = new URLSearchParams(kakaoParams).toString();
-  console.log(params);
-
+  const githubParams = {
+    client_id: process.env.REACT_APP_GITHUB_OAUTH_CLIENT_ID as string,
+    scope: "read:user,user:email",
+  };
+  const kakaoUrl = `https://kauth.kakao.com/oauth/authorize?${new URLSearchParams(
+    kakaoParams
+  ).toString()}`;
+  const githubUrl = `https://github.com/login/oauth/authorize?${new URLSearchParams(
+    githubParams
+  ).toString()}`;
   return (
     <Box mb={4}>
       <HStack my={8}>
@@ -22,11 +29,7 @@ export default function SocialLogin() {
       <VStack>
         <Button
           as="a"
-          href={
-            "https://github.com/login/oauth/authorize?client_id=" +
-            process.env.REACT_APP_GITHUB_OAUTH_CLIENT_ID +
-            "&scope=read:user,user:email"
-          }
+          href={githubUrl}
           w="100%"
           leftIcon={<FaGithub />}
         >
@@ -34,7 +37,7 @@ export default function SocialLogin() {
         </Button>
         <Button
           as="a"
-          href={`https://kauth.kakao.com/oauth/authorize?${params}`}
+          href={kakaoUrl}
           w="100%"
           leftIcon={<FaComment />}
           colorScheme={"yellow"}

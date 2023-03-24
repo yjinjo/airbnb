@@ -5,8 +5,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { githubLogIn } from "../api";
 
 export default function GithubConfirm() {
-  const toast = useToast();
   const { search } = useLocation();
+  const toast = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const mutation = useMutation(githubLogIn, {
@@ -30,11 +30,9 @@ export default function GithubConfirm() {
       mutation.mutate(code);
     }
   };
-
   useEffect(() => {
     confirmLogin();
   }, []);
-
   return (
     <VStack justifyContent={"center"} minH="80vh" spacing={3}>
       <Heading>Processing log in...</Heading>
