@@ -67,9 +67,9 @@ export default function UploadRoom() {
         <Container>
           <Heading textAlign={"center"}>Upload Room</Heading>
           <VStack
+            onSubmit={handleSubmit(onSubmit)}
             spacing={10}
             as="form"
-            onSubmit={handleSubmit(onSubmit)}
             mt={5}
           >
             <FormControl>
