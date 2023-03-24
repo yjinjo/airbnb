@@ -1,6 +1,8 @@
 import Cookie from "js-cookie";
 import axios from "axios";
 import { QueryFunctionContext } from "@tanstack/react-query";
+import { formatDate } from "./lib/utils";
+import { IBooking } from "./routes/RoomDetail";
 
 const instance = axios.create({
   baseURL: "http://localhost:8000/api/v1/",
@@ -89,6 +91,7 @@ export const usernameLogIn = ({
 
 interface ISignUpVariables {
   name: string;
+  phone_nb: string;
   email: string;
   username: string;
   password: string;
@@ -102,6 +105,7 @@ export const SignUp = ({
   password,
   email,
   name,
+  phone_nb,
   currency,
   gender,
   language,
@@ -109,7 +113,7 @@ export const SignUp = ({
   instance
     .post(
       `users/`,
-      { username, password, email, name, currency, gender, language },
+      { username, password, email, name, phone_nb, currency, gender, language },
       {
         headers: { "X-CSRFToken": Cookie.get("csrftoken") || "" },
       }
@@ -137,9 +141,34 @@ export interface IUploadRoomVariables {
   category: number;
 }
 
+export interface IModifyRoomVariables {
+  name: string;
+  country: string;
+  city: string;
+  price: number;
+  rooms: number;
+  toilets: number;
+  description: string;
+  address: string;
+  pet_friendly: boolean;
+  kind: string;
+  amenities: number[];
+  category: number;
+  roomPk: string;
+}
+
 export const uploadRoom = (variables: IUploadRoomVariables) =>
   instance
     .post(`rooms/`, variables, {
+      headers: {
+        "X-CSRFToken": Cookie.get("csrftoken") || "",
+      },
+    })
+    .then((response) => response.data);
+
+export const modifyRoom = (variables: IModifyRoomVariables) =>
+  instance
+    .put(`rooms/${variables.roomPk}`, variables, {
       headers: {
         "X-CSRFToken": Cookie.get("csrftoken") || "",
       },
@@ -194,3 +223,45 @@ export const createPhoto = ({
       }
     )
     .then((response) => response.data);
+
+type CheckBookingQueryKey = [string, string?, Date[]?];
+
+export const checkBooking = ({
+  queryKey,
+}: QueryFunctionContext<CheckBookingQueryKey>) => {
+  const [_, roomPk, dates] = queryKey;
+  if (dates) {
+    const [firstDate, secondDate] = dates;
+    const checkIn = formatDate(firstDate);
+    const checkOut = formatDate(secondDate);
+    return instance
+      .get(
+        `rooms/${roomPk}/bookings/check?check_in=${checkIn}&check_out=${checkOut}`
+      )
+      .then((response) => response.data);
+  }
+};
+
+export const createBooking = (variables: IBooking) =>
+  instance
+    .post(`rooms/${variables.pk}/bookings`, variables, {
+      headers: {
+        "X-CSRFToken": Cookie.get("csrftoken") || "",
+      },
+    })
+    .then((response) => response.status);
+
+export const getBookings = () =>
+  instance.get("bookings/me").then((response) => response.data);
+
+export const getManageBookings = () =>
+  instance.get("bookings/manage").then((response) => response.data);
+
+export const cancelBooking = (bookingPk: number) =>
+  instance
+    .post(`bookings/me/${bookingPk}/cancel`, null, {
+      headers: {
+        "X-CSRFToken": Cookie.get("csrftoken") || "",
+      },
+    })
+    .then((response) => response.status);

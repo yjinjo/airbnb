@@ -83,3 +83,12 @@ class RoomListSerializer(ModelSerializer):
     def get_is_owner(self, room):
         request = self.context["request"]
         return room.owner == request.user
+
+
+class TinyRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = (
+            "name",
+            "price",
+        )
