@@ -138,9 +138,34 @@ export interface IUploadRoomVariables {
   category: number;
 }
 
+export interface IModifyRoomVariables {
+  name: string;
+  country: string;
+  city: string;
+  price: number;
+  rooms: number;
+  toilets: number;
+  description: string;
+  address: string;
+  pet_friendly: boolean;
+  kind: string;
+  amenities: number[];
+  category: number;
+  roomPk: string;
+}
+
 export const uploadRoom = (variables: IUploadRoomVariables) =>
   instance
     .post(`rooms/`, variables, {
+      headers: {
+        "X-CSRFToken": Cookie.get("csrftoken") || "",
+      },
+    })
+    .then((response) => response.data);
+
+export const modifyRoom = (variables: IModifyRoomVariables) =>
+  instance
+    .put(`rooms/${variables.roomPk}`, variables, {
       headers: {
         "X-CSRFToken": Cookie.get("csrftoken") || "",
       },

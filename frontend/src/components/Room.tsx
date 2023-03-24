@@ -37,6 +37,7 @@ export default function Room({
   const onCameraClick = (event: React.SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     navigate(`/rooms/${pk}/photos`);
+    window.location.reload();
   };
 
   return (
