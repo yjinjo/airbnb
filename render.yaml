@@ -1,12 +1,12 @@
 databases:
-  - name: airbnb
-    databaseName: airbnb
+  - name: airbnb-db
+    databaseName: airbnb-db
     user: airbnb
     region: singapore
 
 services:
   - type: web
-    name: airbnb
+    name: airbnb-backend
     env: python
     region: singapore
     buildCommand: "./build.sh"
