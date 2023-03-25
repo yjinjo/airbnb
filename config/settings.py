@@ -14,6 +14,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 import environ
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 import dj_database_url
 
 env = environ.Env()
@@ -191,3 +193,18 @@ CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:3000"]
+
+if not DEBUG:
+    sentry_sdk.init(
+        dsn="https://8999a743ea534429bcc5352280b3b66b@o4504897466793984.ingest.sentry.io/4504897474396160",
+        integrations=[
+            DjangoIntegration(),
+        ],
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production.
+        traces_sample_rate=1.0,
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True,
+    )
