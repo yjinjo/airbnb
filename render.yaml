@@ -1,6 +1,6 @@
 databases:
   - name: airbnb-db
-    databaseName: airbnb-db
+    databaseName: airbnb
     user: airbnb
     region: singapore
 
